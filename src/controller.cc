@@ -47,7 +47,8 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
     while (it != return_queue_.end()) {
         if (clk >= it->complete_cycle) {
 
-            
+            // 添加时间长度输出
+            std::cout << std::hex << it->addr << " " << it->is_write << " " << std::dec << it->added_cycle << " " << std::dec << it -> complete_cycle << " " << std::dec << it->complete_cycle - it->added_cycle << std::endl;
 
             if (it->is_write) {
                 simple_stats_.Increment("num_writes_done");
