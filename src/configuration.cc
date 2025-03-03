@@ -48,8 +48,10 @@ void Config::CalculateSize() {
     int megs_per_bank = page_size * (rows / 1024) / 1024;
     int megs_per_rank = megs_per_bank * banks * devices_per_rank;
 
-    std::cout << "megs_per_rank: " << megs_per_rank << std::endl;
-    std::cout << "channel_size: " << channel_size << std::endl;
+    // 输出rank容量
+    // std::cout << "megs_per_rank: " << megs_per_rank << std::endl;
+    // std::cout << "channel_size: " << channel_size << std::endl;
+
     if (megs_per_rank > channel_size) {
         std::cout << "WARNING: Cannot create memory system of size "
                   << channel_size
@@ -59,9 +61,13 @@ void Config::CalculateSize() {
         channel_size = megs_per_rank;
     } else {
         ranks = channel_size / megs_per_rank;
-        std::cout << "Ranks: " << ranks << std::endl;
+
+        // 输出rank数量
+        // std::cout << "Ranks: " << ranks << std::endl;
         channel_size = ranks * megs_per_rank;
-        std::cout << "Channel Size: " << channel_size << "MB" << std::endl;
+
+        // 输出channel容量
+        // std::cout << "Channel Size: " << channel_size << "MB" << std::endl;
     }
     return;
 }

@@ -46,3 +46,10 @@ release
 
 # IDEs / Editors
 .vscode/
+
+
+# Testing
+*.log
+*.json
+*.txt
+logs/

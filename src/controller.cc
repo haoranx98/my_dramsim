@@ -48,9 +48,28 @@ std::pair<uint64_t, int> Controller::ReturnDoneTrans(uint64_t clk) {
         if (clk >= it->complete_cycle) {
 
             // 添加时间长度输出
-            std::cout << std::hex << it->addr << " " << it->is_write << " " << std::dec << it->added_cycle << " " << std::dec << it -> complete_cycle << " " << std::dec << it->complete_cycle - it->added_cycle << std::endl;
+            
+            if (it->is_write)
+            {
+                std::cout << "WRITE ";
+            }
+            else
+            {
+                std::cout << "READ ";
+            }
+
+            std::cout << "0x" << std::uppercase << std::setw(10) << std::setfill('0') 
+                      << std::hex << it->addr << " ";
+            
+            std::cout << std::dec << it->complete_cycle - it->added_cycle << " ";        
+            std::cout << std::dec << it->added_cycle << " " << std::dec << it -> complete_cycle << std::endl;
+            
 
             if (it->is_write) {
+
+                // 判断是否是写操作 is_write=1 为写操作
+                // std::cout << "write is: " << it->is_write << std::endl;
+
                 simple_stats_.Increment("num_writes_done");
             } else {
                 simple_stats_.Increment("num_reads_done");
@@ -153,6 +172,7 @@ void Controller::ClockTick() {
 }
 
 bool Controller::WillAcceptTransaction(uint64_t hex_addr, bool is_write) const {
+
     if (is_unified_queue_) {
         return unified_queue_.size() < unified_queue_.capacity();
     } else if (!is_write) {
