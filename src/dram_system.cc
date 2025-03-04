@@ -30,7 +30,14 @@ BaseDRAMSystem::BaseDRAMSystem(Config &config, const std::string &output_dir,
 }
 
 int BaseDRAMSystem::GetChannel(uint64_t hex_addr) const {
+
+    std::cout << "hex_addr: " << std::hex << hex_addr << std::endl;
+    std::cout << "config_.shift_bits: " << config_.shift_bits << std::endl;
+
     hex_addr >>= config_.shift_bits;
+    std::cout << "hex_addr: " << std::hex <<  hex_addr << std::endl;
+    std::cout << "config_.ch_pos: " << config_.ch_pos << std::endl;
+    std::cout << "config_.ch_mask: " << config_.ch_mask << std::endl;
     return (hex_addr >> config_.ch_pos) & config_.ch_mask;
 }
 
@@ -123,6 +130,7 @@ JedecDRAMSystem::~JedecDRAMSystem() {
 bool JedecDRAMSystem::WillAcceptTransaction(uint64_t hex_addr,
                                             bool is_write) const {
     int channel = GetChannel(hex_addr);
+    std::cout << "channel: " << channel << std::endl;
     return ctrls_[channel]->WillAcceptTransaction(hex_addr, is_write);
 }
 
