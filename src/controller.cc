@@ -196,8 +196,10 @@ bool Controller::AddTransaction(Transaction trans) {
                 write_buffer_.push_back(trans);
             }
         }
-        trans.complete_cycle = clk_ + 1;
-        return_queue_.push_back(trans);
+
+        // 把这两个放到指令完成时输出
+        // trans.complete_cycle = clk_ + 1;
+        // return_queue_.push_back(trans);
         return true;
     } else {  // read
         // if in write buffer, use the write buffer value
@@ -222,8 +224,8 @@ void Controller::ScheduleTransaction() {
     // determine whether to schedule read or write
     if (write_draining_ == 0 && !is_unified_queue_) {
         // we basically have a upper and lower threshold for write buffer
-        if ((write_buffer_.size() >= write_buffer_.capacity()) ||
-            (write_buffer_.size() > 8 && cmd_queue_.QueueEmpty())) {
+        if ((write_buffer_.size() >= 1 /*write_buffer_.capacity()*/) ||
+            (write_buffer_.size() > 1 && cmd_queue_.QueueEmpty())) {
             write_draining_ = write_buffer_.size();
         }
     }
@@ -280,7 +282,11 @@ void Controller::IssueCommand(const Command &cmd) {
             std::cerr << cmd.hex_addr << " not in write queue!" << std::endl;
             exit(1);
         }
-        auto wr_lat = clk_ - it->second.added_cycle + config_.write_delay;
+        // auto wr_lat = clk_ - it->second.added_cycle + config_.write_delay;
+        auto wr_lat = config_.write_delay;
+        // it->second.added_cycle = clk_;
+        it->second.complete_cycle = clk_ + wr_lat;
+        return_queue_.push_back(it->second);
         simple_stats_.AddValue("write_latency", wr_lat);
         pending_wr_q_.erase(it);
     }

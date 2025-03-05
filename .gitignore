@@ -53,3 +53,6 @@ release
 *.json
 *.txt
 logs/
+*.trace
+*.txt
+
